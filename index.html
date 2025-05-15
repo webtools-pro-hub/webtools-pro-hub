@@ -1,187 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="Webtools Pro Hub - A collection of powerful, easy-to-use web tools." />
-<title>Webtools Pro Hub</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Explore a growing collection of free web tools. Start with our SEO Keyword Analyzer and stay tuned for more!" />
+  <title>Webtools Pro Hub</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: #fff;
+    }
 
-<style>
-  /* Reset */
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-  }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #4a90e2, #9013fe);
-    min-height: 100vh;
-    color: #fff;
-  }
-
-  header {
-    text-align: center;
-    padding: 2rem 1rem 1rem;
-    font-weight: 700;
-    font-size: 2.5rem;
-    letter-spacing: 0.05em;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
-  }
-
-  header span {
-    color: #ffea00;
-  }
-
-  .tagline {
-    font-weight: 400;
-    font-size: 1.1rem;
-    color: #e0e0e0;
-    margin-top: 0.2rem;
-  }
-
-  main {
-    max-width: 1200px;
-    margin: 2rem auto 3rem;
-    padding: 0 1rem;
-  }
-
-  /* Grid container for tools */
-  .tool-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.5rem;
-  }
-
-  /* Individual tool card */
-  .tool-card {
-    background: #ffffff22;
-    border-radius: 12px;
-    padding: 1.5rem 1rem 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 0 8px 16px rgb(0 0 0 / 0.15);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    cursor: pointer;
-    user-select: none;
-  }
-  .tool-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 16px 32px rgb(0 0 0 / 0.3);
-    background: #ffea00;
-    color: #111;
-  }
-
-  /* 3D Icon style with CSS */
-  .tool-icon {
-    width: 70px;
-    height: 70px;
-    margin-bottom: 1rem;
-    perspective: 600px;
-  }
-  .tool-icon-inner {
-    width: 100%;
-    height: 100%;
-    border-radius: 15px;
-    background: linear-gradient(145deg, #ffea00, #f5c000);
-    box-shadow:
-      inset 3px 3px 5px #c7b400,
-      inset -3px -3px 5px #fff400,
-      5px 5px 15px rgba(0,0,0,0.25);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2.5rem;
-    color: #222;
-    transform-style: preserve-3d;
-    transition: transform 0.5s ease;
-  }
-  .tool-card:hover .tool-icon-inner {
-    transform: rotateY(15deg) rotateX(15deg) translateZ(10px);
-  }
-
-  .tool-name {
-    font-weight: 600;
-    font-size: 1.15rem;
-    text-align: center;
-  }
-
-  /* Responsive font sizes */
-  @media (max-width: 480px) {
     header {
-      font-size: 2rem;
+      text-align: center;
+      padding: 40px 20px;
     }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-top: 0;
+    }
+
+    .tool-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .tool-card {
+      background: #ffffff10;
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      transition: 0.3s ease;
+      border: 1px solid #ffffff30;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    }
+
+    .tool-card:hover {
+      transform: translateY(-5px);
+      background: #ffffff20;
+    }
+
+    .tool-card a {
+      text-decoration: none;
+      color: #fff;
+      display: block;
+    }
+
     .tool-icon {
-      width: 55px;
-      height: 55px;
+      font-size: 50px;
+      margin-bottom: 10px;
     }
-  }
 
-  /* Footer AdSense Placeholder */
-  footer {
-    max-width: 1200px;
-    margin: 0 auto 2rem;
-    padding: 0 1rem;
-    text-align: center;
-    color: #f0e600cc;
-    font-size: 0.9rem;
-  }
-  .adsense-placeholder {
-    margin: 1rem auto 0;
-    padding: 10px;
-    background: #ffea0033;
-    border-radius: 8px;
-    color: #444;
-    font-weight: 600;
-  }
-
-</style>
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  Webtools <span>Pro Hub</span>
-  <div class="tagline">Powerful Web Tools at Your Fingertips</div>
-</header>
+  <header>
+    <h1>Webtools Pro Hub</h1>
+    <p>A growing collection of powerful, free-to-use web tools. Stay tuned as we add more!</p>
+  </header>
 
-<main>
-  <div class="tool-grid" id="toolGrid">
-    <!-- Example Tool Cards -->
-    <div class="tool-card" onclick="window.open('https://github.com/yourusername/seo-keyword-analyzer', '_blank')">
-      <div class="tool-icon" aria-label="SEO Keyword Analyzer">
-        <div class="tool-icon-inner">🔍</div>
-      </div>
-      <div class="tool-name">SEO Keyword Analyzer</div>
+  <section class="tool-container">
+
+    <!-- SEO Keyword Analyzer Tool Card -->
+    <div class="tool-card">
+      <a href="seo-keyword-analyzer/index.html">
+        <div class="tool-icon">🔍</div>
+        <h2>SEO Keyword Analyzer</h2>
+        <p>Analyze your keywords for better search ranking</p>
+      </a>
     </div>
 
-    <div class="tool-card" onclick="window.open('https://github.com/yourusername/text-analyzer', '_blank')">
-      <div class="tool-icon" aria-label="Text Analyzer">
-        <div class="tool-icon-inner">📊</div>
-      </div>
-      <div class="tool-name">Text Analyzer</div>
-    </div>
+    <!-- New tools will go here, copy-paste above block -->
 
-    <div class="tool-card" onclick="window.open('https://github.com/yourusername/word-counter', '_blank')">
-      <div class="tool-icon" aria-label="Word Counter">
-        <div class="tool-icon-inner">✍️</div>
-      </div>
-      <div class="tool-name">Word Counter</div>
-    </div>
+  </section>
 
-    <!-- Add more tools here as you create -->
-  </div>
-</main>
-
-<footer>
-  &copy; 2025 Webtools Pro Hub | Your Gateway to Powerful Online Tools
-  <div class="adsense-placeholder">
-    <!-- Google AdSense Code Goes Here -->
-    Ads will appear here once you add your AdSense script
-  </div>
-</footer>
-
-<script>
-  // You can dynamically add tool cards from JS if you want later
-</script>
+  <footer>
+    &copy; 2025 Webtools Pro Hub. All rights reserved.
+  </footer>
 
 </body>
 </html>
