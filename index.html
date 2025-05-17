@@ -172,9 +172,7 @@
     top: 12px;
     right: 16px;
     font-size: 28px;
-    font-weight: bold;
     cursor: pointer;
-    user-select: none;
   }
   .close:hover {
     color: #000;
@@ -200,32 +198,32 @@
   <div class="tool-grid" id="toolGrid">
 
     <!-- SEO Keyword Analyzer Tool -->
-    <div class="tool-card" onclick="window.open('seo-keyword-analyzer/', '_blank')" role="button" tabindex="0" aria-label="SEO Keyword Analyzer">
-      <div class="tool-icon" aria-hidden="true">
+    <div class="tool-card" onclick="window.open('seo-keyword-analyzer/', '_blank')">
+      <div class="tool-icon" aria-label="SEO Keyword Analyzer">
         <div class="tool-icon-inner">🔍</div>
       </div>
       <div class="tool-name">SEO Keyword Analyzer</div>
     </div>
 
-    <!-- Advanced PDF Image Tool (No 2 Card Name Changed) -->
-    <div class="tool-card" onclick="window.open('text-analyzer/', '_blank')" role="button" tabindex="0" aria-label="Advanced PDF Image Tool">
-      <div class="tool-icon" aria-hidden="true">
-        <div class="tool-icon-inner">📊</div>
+    <!-- Advanced PDF Image Tool (No 2 Card Updated) -->
+    <div class="tool-card" onclick="window.open('advanced_pdf_image_tool/', '_blank')">
+      <div class="tool-icon" aria-label="Advanced PDF Image Tool">
+        <div class="tool-icon-inner">📄</div>
       </div>
       <div class="tool-name">Advanced PDF Image Tool</div>
     </div>
 
-    <!-- QuickUnit-Converter (No 3 Card Name Changed) -->
-    <div class="tool-card" onclick="window.open('word-counter/', '_blank')" role="button" tabindex="0" aria-label="QuickUnit-Converter">
-      <div class="tool-icon" aria-hidden="true">
-        <div class="tool-icon-inner">✍️</div>
+    <!-- QuickUnit-Converter (No 3 Card Updated) -->
+    <div class="tool-card" onclick="window.open('quickunit-converter/', '_blank')">
+      <div class="tool-icon" aria-label="QuickUnit-Converter">
+        <div class="tool-icon-inner">🔄</div>
       </div>
       <div class="tool-name">QuickUnit-Converter</div>
     </div>
 
     <!-- README Modal Button -->
-    <div class="tool-card readme-button" onclick="openReadmeModal()" role="button" tabindex="0" aria-label="README">
-      <div class="tool-icon" aria-hidden="true">
+    <div class="tool-card readme-button" onclick="openReadmeModal()">
+      <div class="tool-icon" aria-label="README">
         <div class="tool-icon-inner">📘</div>
       </div>
       <div class="tool-name">README</div>
@@ -235,11 +233,11 @@
 </main>
 
 <!-- README Modal -->
-<div id="readmeModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+<div id="readmeModal" class="modal">
   <div class="modal-content">
-    <button class="close" aria-label="Close README" onclick="closeReadmeModal()">&times;</button>
-    <h2 id="modalTitle">About This Project</h2>
-    <p id="modalDesc">
+    <span class="close" onclick="closeReadmeModal()">&times;</span>
+    <h2>About This Project</h2>
+    <p>
       Webtools Pro Hub is a collection of powerful, easy-to-use web tools including SEO analyzers, word counters, and text utilities. 
       Our aim is to simplify daily digital tasks for creators, marketers, and developers.
     </p>
@@ -255,35 +253,19 @@
 </footer>
 
 <script>
-  // Open README modal
-  function openReadmeModal() {
-    document.getElementById('readmeModal').style.display = 'block';
-    // Set focus inside modal for accessibility
-    document.querySelector('#readmeModal .close').focus();
+function openReadmeModal() {
+  document.getElementById('readmeModal').style.display = 'block';
+}
+function closeReadmeModal() {
+  document.getElementById('readmeModal').style.display = 'none';
+}
+// Close modal if user clicks outside modal content
+window.onclick = function(event) {
+  const modal = document.getElementById('readmeModal');
+  if (event.target == modal) {
+    modal.style.display = 'none';
   }
-
-  // Close README modal
-  function closeReadmeModal() {
-    document.getElementById('readmeModal').style.display = 'none';
-  }
-
-  // Close modal when clicking outside content area
-  window.onclick = function(event) {
-    const modal = document.getElementById('readmeModal');
-    if(event.target === modal) {
-      closeReadmeModal();
-    }
-  }
-
-  // Optional: close modal with ESC key
-  window.addEventListener('keydown', function(event) {
-    if(event.key === 'Escape') {
-      const modal = document.getElementById('readmeModal');
-      if(modal.style.display === 'block') {
-        closeReadmeModal();
-      }
-    }
-  });
+}
 </script>
 
 </body>
