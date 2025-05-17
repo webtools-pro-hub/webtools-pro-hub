@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickUnit Converter - All-in-One Conversion Tool</title>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --dark-color: #202124;
+            --light-color: #f8f9fa;
+            --border-color: #dadce0;
+            --text-color: #3c4043;
+            --text-light: #70757a;
+            --sidebar-width: 250px;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #8ab4f8;
+            --secondary-color: #81c995;
+            --dark-color: #f8f9fa;
+            --light-color: #202124;
+            --border-color: #5f6368;
+            --text-color: #e8eaed;
+            --text-light: #9aa0a6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--light-color);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .logo-icon {
+            font-size: 24px;
+            color: var(--secondary-color);
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-item:hover {
+            background-color: rgba(66, 133, 244, 0.1);
+        }
+
+        .category-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .category-icon {
+            font-size: 18px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .header-titles {
+            flex: 1;
+        }
+
+        .main-title {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .unit-type {
+            font-size: 16px;
+            font-weight: normal;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-color);
+            padding: 5px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: var(--light-color);
+            color: var(--text-color);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+
+        .converter-card {
+            background-color: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .conversion-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .conversion-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: var(--light-color);
+            color: var(--text-color);
+        }
+
+        .input-wrapper select {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results-table th {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .results-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .result-value {
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .copy-btn:hover {
+            opacity: 0.9;
+        }
+
+        .ad-container {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: rgba(66, 133, 244, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            border: 1px dashed var(--primary-color);
+        }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .disclaimer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+            padding: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                height: 100vh;
+                z-index: 100;
+                transition: left 0.3s;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .main-title {
+                font-size: 20px;
+            }
+            
+            .unit-type {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <span class="logo-icon">⇄</span>
+                <h1>QuickUnit</h1>
+            </div>
+
+            <ul class="category-list" id="categoryList">
+                <li class="category-item active" data-category="length">
+                    <span class="category-icon">📏</span>
+                    <span>Length</span>
+                </li>
+                <li class="category-item" data-category="weight">
+                    <span class="category-icon">⚖️</span>
+                    <span>Weight</span>
+                </li>
+                <li class="category-item" data-category="temperature">
+                    <span class="category-icon">🌡️</span>
+                    <span>Temperature</span>
+                </li>
+                <li class="category-item" data-category="volume">
+                    <span class="category-icon">🧴</span>
+                    <span>Volume</span>
+                </li>
+                <li class="category-item" data-category="area">
+                    <span class="category-icon">🗺️</span>
+                    <span>Area</span>
+                </li>
+                <li class="category-item" data-category="speed">
+                    <span class="category-icon">🚀</span>
+                    <span>Speed</span>
+                </li>
+                <li class="category-item" data-category="time">
+                    <span class="category-icon">⏱️</span>
+                    <span>Time</span>
+                </li>
+                <li class="category-item" data-category="digital">
+                    <span class="category-icon">💾</span>
+                    <span>Digital</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+                <div class="header-titles">
+                    <h1 class="main-title">QuickUnit Converter</h1>
+                    <h2 class="unit-type" id="unitType">Length</h2>
+                </div>
+                <button class="theme-toggle" id="themeToggle">🌓</button>
+            </div>
+
+            <input type="text" class="search-box" id="searchBox" placeholder="Search for units...">
+
+            <div class="converter-card">
+                <div class="conversion-controls">
+                    <div class="input-group">
+                        <label>From:</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="fromValue" placeholder="Enter value" value="1">
+                            <select id="fromUnit"></select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>To:</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="toValue" placeholder="Result" readonly>
+                            <select id="toUnit"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="results-table" id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Unit</th>
+                            <th>Value</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                        <!-- Results will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="ad-container">
+                <p>Advertisement</p>
+                <!-- Ad space would go here -->
+                <div style="height: 90px; background-color: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center;">
+                    Ad Space (728x90)
+                </div>
+            </div>
+
+            <footer>
+                <p>QuickUnit Converter - Free online unit conversion tool</p>
+                <div class="footer-links">
+                    <a href="#" id="aboutLink">About</a>
+                    <a href="#" id="contactLink">Contact</a>
+                    <a href="#" id="privacyLink">Privacy Policy</a>
+                    <a href="#" id="termsLink">Terms of Service</a>
+                </div>
+                <div class="disclaimer">
+                    <p>Disclaimer: While we make every effort to ensure the accuracy of our conversions, we cannot guarantee that the results are 100% accurate. Always double-check important measurements.</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Unit conversion data
+        const unitData = {
+            length: {
+                name: "Length",
+                units: [
+                    { name: "Millimeter", abbreviation: "mm", toBase: val => val / 1000 },
+                    { name: "Centimeter", abbreviation: "cm", toBase: val => val / 100 },
+                    { name: "Meter", abbreviation: "m", toBase: val => val },
+                    { name: "Kilometer", abbreviation: "km", toBase: val => val * 1000 },
+                    { name: "Inch", abbreviation: "in", toBase: val => val * 0.0254 },
+                    { name: "Foot", abbreviation: "ft", toBase: val => val * 0.3048 },
+                    { name: "Yard", abbreviation: "yd", toBase: val => val * 0.9144 },
+                    { name: "Mile", abbreviation: "mi", toBase: val => val * 1609.344 }
+                ],
+                baseUnit: "Meter"
+            },
+            weight: {
+                name: "Weight",
+                units: [
+                    { name: "Milligram", abbreviation: "mg", toBase: val => val / 1000000 },
+                    { name: "Gram", abbreviation: "g", toBase: val => val / 1000 },
+                    { name: "Kilogram", abbreviation: "kg", toBase: val => val },
+                    { name: "Metric Ton", abbreviation: "t", toBase: val => val * 1000 },
+                    { name: "Ounce", abbreviation: "oz", toBase: val => val * 0.0283495 },
+                    { name: "Pound", abbreviation: "lb", toBase: val => val * 0.453592 },
+                    { name: "Stone", abbreviation: "st", toBase: val => val * 6.35029 }
+                ],
+                baseUnit: "Kilogram"
+            },
+            temperature: {
+                name: "Temperature",
+                units: [
+                    { name: "Celsius", abbreviation: "°C", toBase: val => val, fromBase: val => val },
+                    { name: "Fahrenheit", abbreviation: "°F", toBase: val => (val - 32) * 5/9, fromBase: val => (val * 9/5) + 32 },
+                    { name: "Kelvin", abbreviation: "K", toBase: val => val - 273.15, fromBase: val => val + 273.15 }
+                ],
+                baseUnit: "Celsius",
+                isTemperature: true
+            },
+            volume: {
+                name: "Volume",
+                units: [
+                    { name: "Milliliter", abbreviation: "mL", toBase: val => val / 1000 },
+                    { name: "Liter", abbreviation: "L", toBase: val => val },
+                    { name: "Cubic Meter", abbreviation: "m³", toBase: val => val },
+                    { name: "Teaspoon", abbreviation: "tsp", toBase: val => val * 0.00492892 },
+                    { name: "Tablespoon", abbreviation: "tbsp", toBase: val => val * 0.0147868 },
+                    { name: "Fluid Ounce", abbreviation: "fl oz", toBase: val => val * 0.0295735 },
+                    { name: "Cup", abbreviation: "cup", toBase: val => val * 0.236588 },
+                    { name: "Pint", abbreviation: "pt", toBase: val => val * 0.473176 },
+                    { name: "Quart", abbreviation: "qt", toBase: val => val * 0.946353 },
+                    { name: "Gallon", abbreviation: "gal", toBase: val => val * 3.78541 }
+                ],
+                baseUnit: "Liter"
+            },
+            area: {
+                name: "Area",
+                units: [
+                    { name: "Square Millimeter", abbreviation: "mm²", toBase: val => val / 1000000 },
+                    { name: "Square Centimeter", abbreviation: "cm²", toBase: val => val / 10000 },
+                    { name: "Square Meter", abbreviation: "m²", toBase: val => val },
+                    { name: "Hectare", abbreviation: "ha", toBase: val => val * 10000 },
+                    { name: "Square Kilometer", abbreviation: "km²", toBase: val => val * 1000000 },
+                    { name: "Square Inch", abbreviation: "in²", toBase: val => val * 0.00064516 },
+                    { name: "Square Foot", abbreviation: "ft²", toBase: val => val * 0.092903 },
+                    { name: "Square Yard", abbreviation: "yd²", toBase: val => val * 0.836127 },
+                    { name: "Acre", abbreviation: "ac", toBase: val => val * 4046.86 },
+                    { name: "Square Mile", abbreviation: "mi²", toBase: val => val * 2589988.11 }
+                ],
+                baseUnit: "Square Meter"
+            },
+            speed: {
+                name: "Speed",
+                units: [
+                    { name: "Meter per second", abbreviation: "m/s", toBase: val => val },
+                    { name: "Kilometer per hour", abbreviation: "km/h", toBase: val => val / 3.6 },
+                    { name: "Mile per hour", abbreviation: "mph", toBase: val => val * 0.44704 },
+                    { name: "Knot", abbreviation: "kn", toBase: val => val * 0.514444 },
+                    { name: "Foot per second", abbreviation: "ft/s", toBase: val => val * 0.3048 }
+                ],
+                baseUnit: "Meter per second"
+            },
+            time: {
+                name: "Time",
+                units: [
+                    { name: "Nanosecond", abbreviation: "ns", toBase: val => val / 1000000000 },
+                    { name: "Microsecond", abbreviation: "μs", toBase: val => val / 1000000 },
+                    { name: "Millisecond", abbreviation: "ms", toBase: val => val / 1000 },
+                    { name: "Second", abbreviation: "s", toBase: val => val },
+                    { name: "Minute", abbreviation: "min", toBase: val => val * 60 },
+                    { name: "Hour", abbreviation: "hr", toBase: val => val * 3600 },
+                    { name: "Day", abbreviation: "d", toBase: val => val * 86400 },
+                    { name: "Week", abbreviation: "wk", toBase: val => val * 604800 },
+                    { name: "Month", abbreviation: "mo", toBase: val => val * 2629746 },
+                    { name: "Year", abbreviation: "yr", toBase: val => val * 31556952 }
+                ],
+                baseUnit: "Second"
+            },
+            digital: {
+                name: "Digital Storage",
+                units: [
+                    { name: "Bit", abbreviation: "b", toBase: val => val / 8 },
+                    { name: "Byte", abbreviation: "B", toBase: val => val },
+                    { name: "Kilobit", abbreviation: "Kb", toBase: val => val * 125 },
+                    { name: "Kilobyte", abbreviation: "KB", toBase: val => val * 1000 },
+                    { name: "Kibibit", abbreviation: "Kib", toBase: val => val * 128 },
+                    { name: "Kibibyte", abbreviation: "KiB", toBase: val => val * 1024 },
+                    { name: "Megabit", abbreviation: "Mb", toBase: val => val * 125000 },
+                    { name: "Megabyte", abbreviation: "MB", toBase: val => val * 1e6 },
+                    { name: "Mebibit", abbreviation: "Mib", toBase: val => val * 131072 },
+                    { name: "Mebibyte", abbreviation: "MiB", toBase: val => val * 1.049e6 },
+                    { name: "Gigabit", abbreviation: "Gb", toBase: val => val * 1.25e8 },
+                    { name: "Gigabyte", abbreviation: "GB", toBase: val => val * 1e9 },
+                    { name: "Gibibit", abbreviation: "Gib", toBase: val => val * 1.342e8 },
+                    { name: "Gibibyte", abbreviation: "GiB", toBase: val => val * 1.074e9 },
+                    { name: "Terabit", abbreviation: "Tb", toBase: val => val * 1.25e11 },
+                    { name: "Terabyte", abbreviation: "TB", toBase: val => val * 1e12 },
+                    { name: "Tebibit", abbreviation: "Tib", toBase: val => val * 1.374e11 },
+                    { name: "Tebibyte", abbreviation: "TiB", toBase: val => val * 1.1e12 }
+                ],
+                baseUnit: "Byte"
+            }
+        };
+
+        // Current state
+        let currentCategory = 'length';
+        let currentSearchTerm = '';
+        let darkMode = false;
+
+        // DOM elements
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const categoryList = document.getElementById('categoryList');
+        const unitType = document.getElementById('unitType');
+        const searchBox = document.getElementById('searchBox');
+        const fromValue = document.getElementById('fromValue');
+        const fromUnit = document.getElementById('fromUnit');
+        const toValue = document.getElementById('toValue');
+        const toUnit = document.getElementById('toUnit');
+        const resultsBody = document.getElementById('resultsBody');
+
+        // Initialize the app
+        function init() {
+            loadCategory(currentCategory);
+            setupEventListeners();
+            checkDarkModePreference();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Theme toggle
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // Mobile menu toggle
+            mobileMenuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+            });
+
+            // Category selection
+            categoryList.addEventListener('click', (e) => {
+                const categoryItem = e.target.closest('.category-item');
+                if (categoryItem) {
+                    currentCategory = categoryItem.dataset.category;
+                    document.querySelector('.category-item.active').classList.remove('active');
+                    categoryItem.classList.add('active');
+                    loadCategory(currentCategory);
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('open');
+                    }
+                }
+            });
+
+            // Search box
+            searchBox.addEventListener('input', (e) => {
+                currentSearchTerm = e.target.value.toLowerCase();
+                updateResults();
+            });
+
+            // From value input
+            fromValue.addEventListener('input', updateResults);
+
+            // From unit selection
+            fromUnit.addEventListener('change', updateResults);
+
+            // To unit selection
+            toUnit.addEventListener('change', updateToValue);
+
+            // Footer links
+            document.getElementById('aboutLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('QuickUnit Converter\n\nA free online tool for converting between different units of measurement.\n\nVersion 1.0');
+            });
+
+            document.getElementById('contactLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Contact us at: support@quickunitconverter.com');
+            });
+
+            document.getElementById('privacyLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Privacy Policy:\n\nWe do not collect any personal data. Any conversions you perform stay entirely in your browser.');
+            });
+
+            document.getElementById('termsLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Terms of Service:\n\nThis service is provided "as is" without warranties of any kind. Use at your own risk.');
+            });
+        }
+
+        // Check user's dark mode preference
+        function checkDarkModePreference() {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                darkMode = true;
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        // Toggle between light and dark theme
+        function toggleTheme() {
+            darkMode = !darkMode;
+            if (darkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        }
+
+        // Load a category
+        function loadCategory(category) {
+            const categoryData = unitData[category];
+            unitType.textContent = categoryData.name;
+            
+            // Populate unit selectors
+            populateUnitSelect(fromUnit, categoryData.units);
+            populateUnitSelect(toUnit, categoryData.units);
+
+            // Set default selections
+            fromUnit.value = categoryData.baseUnit;
+            toUnit.value = categoryData.units.find(u => u.name !== categoryData.baseUnit)?.name || categoryData.units[0].name;
+
+            // Update results
+            updateResults();
+        }
+
+        // Populate a unit select element
+        function populateUnitSelect(selectElement, units) {
+            selectElement.innerHTML = '';
+            units.forEach(unit => {
+                const option = document.createElement('option');
+                option.value = unit.name;
+                option.textContent = `${unit.name} (${unit.abbreviation})`;
+                selectElement.appendChild(option);
+            });
+        }
+
+        // Update all results
+        function updateResults() {
+            const inputValue = parseFloat(fromValue.value) || 0;
+            const fromUnitName = fromUnit.value;
+            const toUnitName = toUnit.value;
+            const category = unitData[currentCategory];
+            const fromUnitData = category.units.find(u => u.name === fromUnitName);
+            const toUnitData = category.units.find(u => u.name === toUnitName);
+
+            // Update the "To" value
+            updateToValue();
+
+            // Filter units based on search term
+            let filteredUnits = category.units;
+            if (currentSearchTerm) {
+                filteredUnits = category.units.filter(unit => 
+                    unit.name.toLowerCase().includes(currentSearchTerm) || 
+                    unit.abbreviation.toLowerCase().includes(currentSearchTerm)
+                );
+            }
+
+            // Clear previous results
+            resultsBody.innerHTML = '';
+
+            // For temperature, handle separately as it doesn't use base unit
+            if (category.isTemperature) {
+                filteredUnits.forEach(unit => {
+                    if (unit.name !== fromUnitName) {
+                        const baseValue = fromUnitData.toBase(inputValue);
+                        const convertedValue = unit.fromBase(baseValue);
+                        addResultRow(unit, convertedValue);
+                    }
+                });
+            } else {
+                // For other units, convert to base unit first
+                const baseValue = fromUnitData.toBase(inputValue);
+                
+                filteredUnits.forEach(unit => {
+                    if (unit.name !== fromUnitName) {
+                        const convertedValue = baseValue / unit.toBase(1);
+                        addResultRow(unit, convertedValue);
+                    }
+                });
+            }
+        }
+
+        // Update just the "To" value
+        function updateToValue() {
+            const inputValue = parseFloat(fromValue.value) || 0;
+            const fromUnitName = fromUnit.value;
+            const toUnitName = toUnit.value;
+            const category = unitData[currentCategory];
+            const fromUnitData = category.units.find(u => u.name === fromUnitName);
+            const toUnitData = category.units.find(u => u.name === toUnitName);
+
+            if (category.isTemperature) {
+                const baseValue = fromUnitData.toBase(inputValue);
+                const convertedValue = toUnitData.fromBase(baseValue);
+                toValue.value = convertedValue.toFixed(6).replace(/\.?0+$/, '');
+            } else {
+                const baseValue = fromUnitData.toBase(inputValue);
+                const convertedValue = baseValue / toUnitData.toBase(1);
+                toValue.value = convertedValue.toFixed(6).replace(/\.?0+$/, '');
+            }
+        }
+
+        // Add a result row to the table
+        function addResultRow(unit, value) {
+            const row = document.createElement('tr');
+            
+            const nameCell = document.createElement('td');
+            nameCell.textContent = `${unit.name} (${unit.abbreviation})`;
+            
+            const valueCell = document.createElement('td');
+            valueCell.className = 'result-value';
+            valueCell.textContent = value.toFixed(6).replace(/\.?0+$/, '');
+            
+            const actionCell = document.createElement('td');
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(valueCell.textContent);
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy';
+                }, 2000);
+            });
+            actionCell.appendChild(copyBtn);
+            
+            row.appendChild(nameCell);
+            row.appendChild(valueCell);
+            row.appendChild(actionCell);
+            
+            resultsBody.appendChild(row);
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
