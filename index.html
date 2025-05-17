@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -238,7 +238,12 @@
     <span class="close" onclick="closeReadmeModal()">&times;</span>
     <h2>About This Project</h2>
     <p>
-      Webtools Pro Hub is a collection of powerful, easy-to-use web tools including SEO analyzers, word counters, and text utilities. 
+      Webtools Pro Hub is a collection of powerful, easy-to-use web tools including:
+      <ul>
+        <li>SEO Keyword Analyzer</li>
+        <li>Advanced PDF Image Tool</li>
+        <li>QuickUnit-Converter</li>
+      </ul>
       Our aim is to simplify daily digital tasks for creators, marketers, and developers.
     </p>
   </div>
@@ -259,4 +264,14 @@ function openReadmeModal() {
 function closeReadmeModal() {
   document.getElementById('readmeModal').style.display = 'none';
 }
-// Close
+// Close modal when clicking outside the modal content
+window.onclick = function(event) {
+  var modal = document.getElementById('readmeModal');
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+</body>
+</html>
