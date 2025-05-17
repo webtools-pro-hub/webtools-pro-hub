@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- SEO Meta Tags -->
+    <title>Advanced PDF & Image Tool | OCR, Convert PDF to Word/Excel, Extract Images</title>
+    <meta name="description" content="A powerful online tool to perform OCR on images and PDFs, convert PDFs to Excel and Word, extract text and images from PDFs, and save individual PDF pages. Supports multiple languages.">
+    <meta name="keywords" content="pdf tool, image tool, ocr, pdf to excel, pdf to word, extract text from pdf, extract images from pdf, online ocr, pdf converter, image to text, urdu ocr, english ocr">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="YOUR_WEBSITE_URL_HERE/Advanced-PDF-Image-Tool.html">
+
+    <!-- Open Graph Meta Tags (for social media sharing) -->
+    <meta property="og:title" content="Advanced PDF & Image Tool | OCR, Convert PDF">
+    <meta property="og:description" content="Perform OCR, convert PDFs to Word/Excel, extract text/images, and more with this versatile online tool.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="YOUR_WEBSITE_URL_HERE/Advanced-PDF-Image-Tool.html">
+    <meta property="og:image" content="URL_TO_YOUR_REPRESENTATIVE_IMAGE.jpg"> <!-- Replace with an actual image URL for your tool -->
+    <meta property="og:site_name" content="Your Site Name"> <!-- Optional: Replace with your site name -->
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Advanced PDF & Image Tool | OCR, Convert PDF">
+    <meta name="twitter:description" content="Perform OCR, convert PDFs to Word/Excel, extract text/images, and more with this versatile online tool.">
+    <meta name="twitter:image" content="URL_TO_YOUR_REPRESENTATIVE_IMAGE.jpg"> <!-- Replace with an actual image URL for your tool -->
+    <!-- <meta name="twitter:site" content="@yourtwitterhandle"> --> <!-- Optional: Replace with your Twitter handle -->
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --bg: #ffffff;
+            --text: #212529;
+            --card: #ffffff;
+            --border: #e9ecef;
+            --success: #28a745; /* Greener success color */
+            --warning: #f8961e;
+            --error: #ef233c;
+        }
+
+        [data-theme="dark"] {
+            --primary: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --light: #121212;
+            --dark: #f8f9fa;
+            --gray: #adb5bd;
+            --bg: #121212;
+            --text: #f8f9fa;
+            --card: #1e1e1e;
+            --border: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .adsense-placeholder {
+            width: 100%;
+            max-width: 900px; /* Or your preferred ad width */
+            min-height: 90px; /* Common ad height, adjust as needed */
+            background-color: var(--light);
+            border: 1px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem auto;
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-align: center;
+        }
+         [data-theme="dark"] .adsense-placeholder {
+            background-color: var(--card); /* Dark theme ad placeholder bg */
+            border: 1px dashed var(--border);
+            color: var(--gray);
+        }
+
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto; /* Centered, adsense placeholders are also centered with margin: auto */
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-weight: 300;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            padding: 1.5rem;
+        }
+
+        .upload-section {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-box {
+            border: 2px dashed var(--gray);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(67, 97, 238, 0.05);
+            position: relative;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-box:hover {
+            border-color: var(--primary);
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+        }
+
+        .upload-text h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .upload-text p {
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        #file-input, #pdf-input {
+            display: none;
+        }
+
+        #image-preview-container, #pdf-preview-container {
+            position: relative;
+            width: 100%;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        #image-preview, #pdf-preview { /* pdf-preview is an img tag, not used in current logic */
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .change-image-btn, .change-pdf-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .change-image-btn:hover, .change-pdf-btn:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .number-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .number-input input { /* Specific to number input */
+            flex: 1;
+        }
+        
+        /* General input, select, button styling */
+        input[type="text"], input[type="number"], input[type="email"], select, button {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            border: 2px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            background-size: 1em;
+        }
+
+        button { /* General button styling */
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            border: none; /* Remove default button border if not overridden by specific inputs */
+        }
+
+        button:hover:not(:disabled) { /* Ensure hover only on non-disabled */
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: var(--gray) !important;
+            color: var(--light) !important;
+            border-color: var(--gray) !important; /* if border was present */
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .status {
+            text-align: center;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .result-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #result {
+            background: var(--light);
+            padding: 1.2rem;
+            border-radius: 10px;
+            min-height: 200px;
+            white-space: pre-wrap;
+            border: 2px solid var(--border);
+            color: var(--text);
+            font-size: 0.9rem;
+            overflow-wrap: break-word;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btns button {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.7rem;
+        }
+
+        .copy-btn { background: var(--accent); }
+        .export-pdf-btn { background: #e74c3c; }
+        .export-excel-btn { background: #2ecc71; }
+        .export-word-btn { background: #3498db; }
+        .new-image-btn { background: var(--gray); }
+        .support-btn { background: #FF9500; }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: white; /* Default text color, background set by type */
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            max-width: 90%;
+        }
+        .notification.show { transform: translateX(0); }
+        .notification.success { background: var(--success); }
+        .notification.error { background: var(--error); }
+        .notification.warning { background: var(--warning); }
+        .notification.info { background: var(--primary); }
+
+
+        .file-type-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-btn {
+            padding: 0.7rem 1rem;
+            background: none;
+            border: none; /* Tabs are borderless */
+            color: var(--gray);
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; /* To align with parent's border */
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .support-modal {
+            display: none;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            justify-content: center; align-items: center;
+        }
+        .support-modal.active { display: flex; }
+
+        .support-content {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px; width: 90%;
+            max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+        }
+        .support-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .support-header h3 { font-size: 1.3rem; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+        .close-support { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray); padding: 0; /* Reset padding */ }
+
+        .payment-methods { display: flex; flex-direction: column; gap: 1rem; }
+        .payment-method { background: var(--light); border-radius: 10px; padding: 1rem; border: 1px solid var(--border); }
+        .payment-method h4 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; color: var(--text); }
+        .payment-icon { color: var(--primary); font-size: 1.2rem; }
+        .payment-details { background: var(--bg); padding: 0.8rem; border-radius: 8px; font-family: monospace; position: relative; word-break: break-all; }
+        .copy-payment {
+            position: absolute; right: 0.5rem; top: 0.5rem;
+            background: rgba(0,0,0,0.1); border: none; border-radius: 4px;
+            padding: 0.2rem 0.5rem; cursor: pointer; font-size: 0.7rem; color: var(--text);
+        }
+        .payment-image { max-width: 150px; margin-top: 0.8rem; border-radius: 5px; border: 1px solid var(--border); }
+        .support-footer { margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--gray); }
+
+        .conversion-options { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .conversion-option { flex: 1; min-width: 120px; text-align: center; }
+        .conversion-option button {
+            width: 100%; padding: 1rem 0.5rem; border-radius: 10px;
+            background: var(--light); color: var(--primary); border: 2px solid var(--primary);
+            transition: all 0.3s;
+        }
+        .conversion-option button:hover:not(:disabled) { background: var(--primary); color: white; }
+        .conversion-option button i { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
+        .conversion-option button span { display: block; font-size: 0.9rem; }
+        
+        .page-info { text-align: center; margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray); }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 480px) {
+            .main-content { padding: 1rem; }
+            header { padding: 1rem 0.5rem; }
+            h1 { font-size: 1.3rem; padding-right: 40px; }
+            .upload-box { padding: 1rem; min-height: 150px; }
+            .upload-icon { font-size: 2rem; }
+            .controls { flex-direction: column; }
+            .control-group { min-width: 100%; }
+            .action-btns button { min-width: 100%; }
+            .support-content { padding: 1.5rem; }
+            .conversion-options { flex-direction: column; }
+            .conversion-option { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="adsense-placeholder" id="adsense-top">
+        <!-- AdSense Code Goes Here -->
+        Advertisement Placeholder (Top)
+    </div>
+
+    <main>
+        <div class="container">
+            <header>
+                <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon"></i></button>
+                <h1>Advanced PDF & Image Tool</h1>
+                <p class="subtitle">OCR, Convert PDF to Excel/Word, Extract Text/Images & More</p>
+            </header>
+            
+            <div class="main-content">
+                <div class="file-type-tabs">
+                    <button class="tab-btn active" data-tab="image-tab">Image Tools</button>
+                    <button class="tab-btn" data-tab="pdf-tab">PDF Tools</button>
+                </div>
+                
+                <div class="tab-content active" id="image-tab">
+                    <div class="upload-section">
+                        <div class="upload-box" id="upload-box">
+                            <i class="fas fa-image upload-icon"></i>
+                            <div class="upload-text">
+                                <h3>Upload Image(s) for OCR</h3>
+                                <p>Click to browse or drag and drop</p>
+                            </div>
+                            <input type="file" id="file-input" accept="image/*" multiple>
+                        </div>
+                        <div id="image-preview-container">
+                            <button class="change-image-btn" id="change-image-btn" title="Change Image(s)"><i class="fas fa-sync-alt"></i></button>
+                            <img id="image-preview" alt="Selected image preview">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="pdf-tab">
+                    <div class="upload-section">
+                        <div class="upload-box" id="pdf-upload-box">
+                            <i class="fas fa-file-pdf upload-icon"></i>
+                            <div class="upload-text">
+                                <h3>Upload a PDF</h3>
+                                <p>Click to browse or drag and drop</p>
+                            </div>
+                            <input type="file" id="pdf-input" accept="application/pdf">
+                        </div>
+                        <div id="pdf-preview-container">
+                            <button class="change-pdf-btn" id="change-pdf-btn" title="Change PDF"><i class="fas fa-sync-alt"></i></button>
+                            <canvas id="pdf-canvas" style="max-width: 100%; border-radius: 10px; display: block; margin: 0 auto;" aria-label="PDF page preview"></canvas>
+                            <div class="page-info" id="page-info">Page 1 of 1</div>
+                        </div>
+                    </div>
+
+                    <div class="conversion-options">
+                        <div class="conversion-option"><button id="convert-to-excel-btn"><i class="fas fa-file-excel"></i><span>Convert All to Excel</span></button></div>
+                        <div class="conversion-option"><button id="convert-to-word-btn"><i class="fas fa-file-word"></i><span>Convert All to Word</span></button></div>
+                        <div class="conversion-option"><button id="extract-text-btn"><i class="fas fa-font"></i><span>Extract All Text</span></button></div>
+                        <div class="conversion-option"><button id="extract-images-btn"><i class="fas fa-image"></i><span>Extract All Images</span></button></div>
+                        <div class="conversion-option"><button id="save-current-page-pdf-btn"><i class="fas fa-file-download"></i><span>Save Current Page</span></button></div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="language">Select Language (for Image OCR)</label>
+                        <select id="language">
+                            <option value="eng">English</option><option value="ara">Arabic</option><option value="urd">Urdu</option>
+                            <option value="hin">Hindi</option><option value="chi_sim">Chinese (Simplified)</option><option value="spa">Spanish</option>
+                            <option value="fra">French</option><option value="deu">German</option><option value="rus">Russian</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="page-number">Page Number (PDF Preview/Save)</label>
+                        <div class="number-input">
+                            <input type="number" id="page-number" min="1" value="1" placeholder="Page no." aria-label="PDF Page Number">
+                            <button id="prev-page-btn" aria-label="Previous PDF Page"><i class="fas fa-chevron-left"></i></button>
+                            <button id="next-page-btn" aria-label="Next PDF Page"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label> </label> <!-- Spacer -->
+                        <button id="convert-btn"><i class="fas fa-magic"></i> Process (Image OCR / PDF Full Text Extract)</button>
+                    </div>
+                </div>
+                
+                <div class="status" id="status" role="status" aria-live="polite">
+                    Ready to process your file
+                    <div class="progress-bar" aria-hidden="true"><div class="progress" id="progress" style="width: 0%;"></div></div>
+                </div>
+                
+                <div class="result-section" id="result-section">
+                    <label for="result" class="sr-only">Extracted Text Result</label> <!-- For screen readers -->
+                    <div id="result" contenteditable="true" aria-label="Extracted text output, editable">Your extracted text will appear here...</div>
+                    <div class="action-btns">
+                        <button class="copy-btn" id="copy-btn"><i class="fas fa-copy"></i> Copy Text</button>
+                        <button class="export-pdf-btn" id="export-pdf-btn"><i class="fas fa-file-pdf"></i> Save Text as PDF</button>
+                        <button class="export-excel-btn" id="export-excel-btn"><i class="fas fa-file-excel"></i> Save Text as Excel</button>
+                        <button class="export-word-btn" id="export-word-btn"><i class="fas fa-file-word"></i> Save Text as Word</button>
+                        <button class="new-image-btn" id="new-image-btn"><i class="fas fa-redo"></i> New Process</button>
+                        <button class="support-btn" id="support-btn"><i class="fas fa-heart"></i> Support Us</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="adsense-placeholder" id="adsense-bottom">
+        <!-- AdSense Code Goes Here -->
+        Advertisement Placeholder (Bottom)
+    </div>
+    
+    <footer>
+        <p>© <span id="current-year"></span> Your Website Name. All rights reserved.</p>
+        <p>Use this tool to easily manage your PDF and image files.</p>
+    </footer>
+
+    <div class="support-modal" id="support-modal" role="dialog" aria-labelledby="support-modal-title" aria-modal="true">
+        <div class="support-content">
+            <div class="support-header">
+                <h3 id="support-modal-title"><i class="fas fa-heart payment-icon"></i> Support This Tool</h3>
+                <button class="close-support" id="close-support" aria-label="Close support dialog">×</button>
+            </div>
+            <p style="margin-bottom: 1.5rem; color: var(--gray);">If you find this tool helpful, please consider supporting us to keep it running and improved.</p>
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <h4><i class="fas fa-university payment-icon"></i> Bank Transfer</h4>
+                    <div class="payment-details">
+                        <button class="copy-payment" onclick="copyPaymentInfo('Bank: Meezan Bank\nAccount: 1234-5678910\nIBAN: PK00MEZN1234567891011\nAccount Title: Your Name')" aria-label="Copy Bank Transfer Details"><i class="fas fa-copy"></i> Copy</button>
+                        <strong>Bank:</strong> Meezan Bank<br><strong>Account:</strong> 1234-5678910<br><strong>IBAN:</strong> PK00MEZN1234567891011<br><strong>Account Title:</strong> Your Name
+                    </div>
+                </div>
+                <div class="payment-method">
+                    <h4><i class="fas fa-mobile-alt payment-icon"></i> JazzCash</h4>
+                    <div class="payment-details">
+                        <button class="copy-payment" onclick="copyPaymentInfo('JazzCash: 0300-1234567\nName: Your Name')" aria-label="Copy JazzCash Details"><i class="fas fa-copy"></i> Copy</button>
+                        <strong>Number:</strong> 0300-1234567<br><strong>Name:</strong> Your Name
+                    </div>
+                    <img src="https://via.placeholder.com/150x150.png?text=JazzCash+QR" alt="JazzCash QR Code Placeholder" class="payment-image">
+                </div>
+                <div class="payment-method">
+                    <h4><i class="fas fa-wallet payment-icon"></i> EasyPaisa</h4>
+                    <div class="payment-details">
+                        <button class="copy-payment" onclick="copyPaymentInfo('EasyPaisa: 0312-3456789\nName: Your Name')" aria-label="Copy EasyPaisa Details"><i class="fas fa-copy"></i> Copy</button>
+                        <strong>Number:</strong> 0312-3456789<br><strong>Name:</strong> Your Name
+                    </div>
+                    <img src="https://via.placeholder.com/150x150.png?text=EasyPaisa+QR" alt="EasyPaisa QR Code Placeholder" class="payment-image">
+                </div>
+                <div class="payment-method">
+                    <h4><i class="fab fa-paypal payment-icon"></i> PayPal</h4>
+                    <div class="payment-details">
+                        <button class="copy-payment" onclick="copyPaymentInfo('PayPal: your.email@example.com')" aria-label="Copy PayPal Email"><i class="fas fa-copy"></i> Copy</button>
+                        <strong>Email:</strong> your.email@example.com
+                    </div>
+                    <a href="https://paypal.me/yourusername" target="_blank" rel="noopener noreferrer" class="donate-btn" style="display: inline-block; margin-top: 0.8rem; text-decoration: none;">
+                        <button style="background: #0070ba; color: white; padding: 0.6rem 1rem; border-radius: 5px; cursor: pointer;"><i class="fab fa-paypal"></i> Donate via PayPal</button>
+                    </a>
+                </div>
+            </div>
+            <div class="support-footer"><p>Thank you for your support! ❤️</p></div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification" role="alert">
+        <i class="fas fa-info-circle"></i> <!-- Icon changes based on type -->
+        <span id="notification-text">Notification text</span>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+        const { PDFDocument, PDFName, PDFStream } = window.PDFLib;
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+
+        const getEl = id => document.getElementById(id);
+        const querySel = sel => document.querySelector(sel);
+        const querySelAll = sel => document.querySelectorAll(sel);
+
+        // DOM Elements
+        const uploadBox = getEl('upload-box');
+        const pdfUploadBox = getEl('pdf-upload-box');
+        const fileInput = getEl('file-input');
+        const pdfInput = getEl('pdf-input');
+        const imagePreviewContainer = getEl('image-preview-container');
+        const imagePreview = getEl('image-preview');
+        const pdfPreviewContainer = getEl('pdf-preview-container');
+        const pdfCanvas = getEl('pdf-canvas');
+        const changeImageBtn = getEl('change-image-btn');
+        const changePdfBtn = getEl('change-pdf-btn');
+        const convertBtn = getEl('convert-btn');
+        const statusEl = getEl('status');
+        const progress = getEl('progress');
+        const resultSection = getEl('result-section');
+        const resultEl = getEl('result');
+        const copyBtn = getEl('copy-btn');
+        const exportPdfBtn = getEl('export-pdf-btn');
+        const exportExcelBtn = getEl('export-excel-btn');
+        const exportWordBtn = getEl('export-word-btn');
+        const newImageBtn = getEl('new-image-btn');
+        const supportBtn = getEl('support-btn');
+        const supportModal = getEl('support-modal');
+        const closeSupport = getEl('close-support');
+        const languageSelect = getEl('language');
+        const pageNumberInput = getEl('page-number');
+        const prevPageBtn = getEl('prev-page-btn');
+        const nextPageBtn = getEl('next-page-btn');
+        const notification = getEl('notification');
+        const notificationText = getEl('notification-text');
+        const themeToggle = getEl('theme-toggle');
+        const tabBtns = querySelAll('.tab-btn');
+        const tabContents = querySelAll('.tab-content');
+        const pageInfo = getEl('page-info');
+        const convertToExcelBtn = getEl('convert-to-excel-btn');
+        const convertToWordBtn = getEl('convert-to-word-btn');
+        const extractTextBtn = getEl('extract-text-btn');
+        const extractImagesBtn = getEl('extract-images-btn');
+        const saveCurrentPagePdfBtn = getEl('save-current-page-pdf-btn');
+        const currentYearEl = getEl('current-year');
+        if(currentYearEl) currentYearEl.textContent = new Date().getFullYear();
+
+
+        // Variables
+        let currentFile = null; 
+        let currentPdf = null; 
+        let pdfDoc = null; 
+        let pdfBytes = null; 
+        let currentPage = 1;
+        let darkMode = localStorage.getItem('darkMode') === 'true';
+        let activeTab = 'image-tab';
+        let currentFiles = []; 
+        let extractedText = '';
+
+        function setButtonBusyState(button, isBusy, busyText = 'Processing...') {
+            if (!button) return;
+            const originalContent = button.innerHTML; // Store it simply
+            button.disabled = isBusy;
+            if (isBusy) {
+                button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${busyText}`;
+                button.dataset.originalContent = originalContent; // Save for restoration
+            } else {
+                 button.innerHTML = button.dataset.originalContent || originalContent; // Restore
+            }
+        }
+        
+        function showNotification(message, type = 'info') { 
+            notificationText.textContent = message;
+            notification.className = 'notification show'; 
+            const iconEl = notification.querySelector('i');
+
+            switch (type) {
+                case 'success': notification.classList.add('success'); if (iconEl) iconEl.className = 'fas fa-check-circle'; break;
+                case 'error': notification.classList.add('error'); if (iconEl) iconEl.className = 'fas fa-times-circle'; break;
+                case 'warning': notification.classList.add('warning'); if (iconEl) iconEl.className = 'fas fa-exclamation-triangle'; break;
+                default: notification.classList.add('info'); if (iconEl) iconEl.className = 'fas fa-info-circle'; break;
+            }
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+
+        function readFileAsArrayBuffer(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (err) => reject(err);
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        function updatePageInfo() {
+            pageInfo.textContent = pdfDoc ? `Page ${currentPage} of ${pdfDoc.numPages}` : `Page 1 of 1`;
+        }
+
+        async function renderPdfPage(pageNum) {
+            if (!pdfDoc || pageNum < 1 || pageNum > pdfDoc.numPages) return;
+            try {
+                const page = await pdfDoc.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 1.5 });
+                pdfCanvas.height = viewport.height;
+                pdfCanvas.width = viewport.width;
+                const context = pdfCanvas.getContext('2d');
+                await page.render({ canvasContext: context, viewport: viewport }).promise;
+                updatePageInfo();
+            } catch (error) { console.error('Page render error:', error); showNotification('Error rendering PDF page!', 'error'); }
+        }
+
+        function setPdfActionButtonsState(disabled) {
+            [convertToExcelBtn, convertToWordBtn, extractTextBtn, extractImagesBtn, saveCurrentPagePdfBtn].forEach(btn => {
+                if(btn) btn.disabled = disabled;
+            });
+        }
+        
+        function resetUploadBoxUI(boxElement, iconClass, title, subtitle) {
+            boxElement.style.padding = '1.5rem';
+            const icon = boxElement.querySelector('.upload-icon');
+            const h3 = boxElement.querySelector('.upload-text h3');
+            const p = boxElement.querySelector('.upload-text p');
+            if (icon) icon.className = `fas ${iconClass} upload-icon`;
+            if (h3) h3.textContent = title;
+            if (p) p.textContent = subtitle;
+        }
+
+        function resetForm() {
+            fileInput.value = ''; pdfInput.value = '';
+            currentFile = null; currentPdf = null; pdfDoc = null; pdfBytes = null;
+            currentPage = 1; currentFiles = []; extractedText = '';
+            
+            imagePreviewContainer.style.display = 'none'; imagePreview.src = '#';
+            pdfPreviewContainer.style.display = 'none';
+            const context = pdfCanvas.getContext('2d');
+            context.clearRect(0, 0, pdfCanvas.width, pdfCanvas.height);
+
+            resultSection.style.display = 'none'; resultEl.textContent = 'Your extracted text will appear here...';
+            statusEl.textContent = 'Ready to process your file'; progress.style.width = '0%';
+            
+            pageNumberInput.value = '1'; pageNumberInput.max = '1'; updatePageInfo();
+            
+            resetUploadBoxUI(uploadBox, 'fa-image', 'Upload Image(s) for OCR', 'Click to browse or drag and drop');
+            resetUploadBoxUI(pdfUploadBox, 'fa-file-pdf', 'Upload a PDF', 'Click to browse or drag and drop');
+
+            setPdfActionButtonsState(true);
+            convertBtn.disabled = false; 
+            convertBtn.innerHTML = convertBtn.dataset.originalContent || '<i class="fas fa-magic"></i> Process (Image OCR / PDF Full Text Extract)';
+        }
+
+        function switchTab(tabId) {
+            activeTab = tabId;
+            tabContents.forEach(content => content.classList.remove('active'));
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            getEl(tabId).classList.add('active');
+            querySel(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+            resetForm();
+        }
+        
+        async function handleImageSelect(e) {
+            if (e.target.files && e.target.files.length) {
+                currentFiles = Array.from(e.target.files); currentFile = currentFiles[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imagePreview.src = event.target.result; imagePreviewContainer.style.display = 'block';
+                    uploadBox.style.padding = '0.5rem';
+                    const h3 = uploadBox.querySelector('.upload-text h3');
+                    if(h3) h3.textContent = currentFiles.length > 1 ? `${currentFiles.length} images selected` : 'Image selected';
+                }
+                reader.readAsDataURL(currentFile); setPdfActionButtonsState(true);
+            }
+        }
+
+        async function handlePdfSelect(e) {
+            if (e.target.files && e.target.files.length) {
+                currentPdf = e.target.files[0];
+                try {
+                    pdfBytes = await readFileAsArrayBuffer(currentPdf);
+                    pdfDoc = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
+                    pageNumberInput.max = pdfDoc.numPages; pageNumberInput.value = 1; currentPage = 1;
+                    await renderPdfPage(currentPage);
+                    pdfPreviewContainer.style.display = 'block'; pdfUploadBox.style.padding = '0.5rem';
+                    const h3 = pdfUploadBox.querySelector('.upload-text h3');
+                    if(h3) h3.textContent = 'PDF selected';
+                    setPdfActionButtonsState(false);
+                } catch (error) { console.error('PDF Load Error:', error); showNotification(`Error loading PDF: ${error.message}`, 'error'); setPdfActionButtonsState(true); }
+            }
+        }
+
+        function prevPage() { if (pdfDoc && currentPage > 1) { currentPage--; pageNumberInput.value = currentPage; renderPdfPage(currentPage); } }
+        function nextPage() { if (pdfDoc && currentPage < pdfDoc.numPages) { currentPage++; pageNumberInput.value = currentPage; renderPdfPage(currentPage); } }
+        function goToPage() {
+            const pageNum = parseInt(pageNumberInput.value);
+            if (pdfDoc && pageNum >= 1 && pageNum <= pdfDoc.numPages) { currentPage = pageNum; renderPdfPage(currentPage); }
+            else if (pdfDoc) { pageNumberInput.value = currentPage; }
+        }
+
+        async function processFile() {
+            if (activeTab === 'image-tab' && currentFiles.length === 0) { showNotification('Please select image(s) first!', 'error'); return; }
+            if (activeTab === 'pdf-tab' && !currentPdf) { showNotification('Please select a PDF first!', 'error'); return; }
+
+            setButtonBusyState(convertBtn, true, 'Processing...');
+            statusEl.textContent = 'Starting process...'; progress.style.width = '0%'; resultEl.textContent = '';
+
+            try {
+                let textOutput = '';
+                if (activeTab === 'image-tab') {
+                    const lang = languageSelect.value;
+                    statusEl.textContent = `Processing ${currentFiles.length} image(s) with OCR...`;
+                    for (let i = 0; i < currentFiles.length; i++) {
+                        const file = currentFiles[i];
+                        const { data: { text } } = await Tesseract.recognize(file, lang, {
+                            logger: m => {
+                                if (m.status === 'recognizing text') {
+                                    const overallProgress = Math.round(((i + m.progress) / currentFiles.length) * 100);
+                                    progress.style.width = `${overallProgress}%`;
+                                    statusEl.textContent = `OCR Image ${i+1}/${currentFiles.length}: ${Math.round(m.progress * 100)}%`;
+                                } } });
+                        textOutput += (currentFiles.length > 1 ? `\n\n--- Image ${i+1} ---\n` : '') + text;
+                    }
+                } else { 
+                    if (!pdfDoc) { showNotification('PDF not loaded.', 'error'); throw new Error("PDF not loaded"); }
+                    statusEl.textContent = `Extracting text from PDF...`;
+                    for (let i = 1; i <= pdfDoc.numPages; i++) {
+                        const page = await pdfDoc.getPage(i);
+                        const textContent = await page.getTextContent();
+                        textOutput += `Page ${i}:\n${textContent.items.map(item => item.str).join(' ')}\n\n`;
+                        progress.style.width = `${Math.round((i / pdfDoc.numPages) * 100)}%`;
+                    }
+                }
+                extractedText = textOutput; resultEl.textContent = textOutput.trim() || "No text found!";
+                resultSection.style.display = 'block'; statusEl.textContent = 'Processing complete!';
+                showNotification('Text processed successfully!', 'success');
+            } catch (error) { console.error('Processing Error:', error); statusEl.textContent = `Error: ${error.message}`; showNotification(`Error processing file: ${error.message}`, 'error');
+            } finally { setButtonBusyState(convertBtn, false); }
+        }
+
+        async function convertPdfToAll(format) { // Excel or Word
+            if (!currentPdf || !pdfBytes) { showNotification('Please select a PDF first!', 'error'); return; }
+            const btn = format === 'excel' ? convertToExcelBtn : convertToWordBtn;
+            setButtonBusyState(btn, true, `Converting to ${format}...`);
+            try {
+                const tempPdfDoc = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
+                let fullText = '';
+                for (let i = 1; i <= tempPdfDoc.numPages; i++) {
+                    const page = await tempPdfDoc.getPage(i);
+                    const tc = await page.getTextContent();
+                    fullText += tc.items.map(it => it.str).join(' ') + '\n'; // Join lines with spaces, add newline per page text
+                }
+                if (format === 'excel') {
+                    const lines = fullText.split('\n').filter(line => line.trim() !== '');
+                    const ws_data = lines.map(line => [line]); // Each line in its own row, first column
+                    const ws = XLSX.utils.aoa_to_sheet([['Extracted PDF Text'], ...ws_data]); // Add a header
+                    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Extracted Text");
+                    XLSX.writeFile(wb, `${currentPdf.name.replace(/\.pdf$/i, '')}_excel.xlsx`);
+                } else { // Word
+                    const html = `<html><head><meta charset="UTF-8"></head><body><h1>Extracted PDF Content</h1><p>${fullText.replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>')}</p></body></html>`;
+                    saveAs(new Blob(['\ufeff', html], { type: 'application/msword' }), `${currentPdf.name.replace(/\.pdf$/i, '')}_word.doc`);
+                }
+                showNotification(`PDF converted to ${format.toUpperCase()}!`, 'success');
+            } catch (err) { showNotification(`${format.toUpperCase()} conversion error: ${err.message}`, 'error'); console.error(err); }
+            finally { setButtonBusyState(btn, false); }
+        }
+
+
+        async function extractTextFromPdf() {
+            if (!currentPdf || !pdfBytes) { showNotification('Please select a PDF first!', 'error'); return; }
+            setButtonBusyState(extractTextBtn, true, "Extracting...");
+            statusEl.textContent = 'Extracting text from PDF...'; progress.style.width = '0%';
+            try {
+                const tempPdfDoc = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
+                let fullText = '';
+                for (let i = 1; i <= tempPdfDoc.numPages; i++) {
+                    const page = await tempPdfDoc.getPage(i);
+                    const tc = await page.getTextContent();
+                    fullText += `Page ${i}:\n${tc.items.map(it => it.str).join(' ')}\n\n`;
+                    progress.style.width = `${Math.round((i / tempPdfDoc.numPages) * 100)}%`;
+                }
+                extractedText = fullText.trim(); resultEl.textContent = extractedText || "No text found in PDF!";
+                resultSection.style.display = 'block'; statusEl.textContent = 'Text extraction complete!';
+                showNotification('Text extracted from PDF!', 'success');
+            } catch (err) { showNotification(`PDF text extraction error: ${err.message}`, 'error'); statusEl.textContent = 'Error.'; console.error(err); }
+            finally { setButtonBusyState(extractTextBtn, false); }
+        }
+        
+        async function saveCurrentPageAsPdf() {
+            if (!currentPdf || !pdfDoc || !pdfBytes || currentPage < 1 || currentPage > pdfDoc.numPages) { showNotification('Valid PDF and page required.', 'error'); return; }
+            setButtonBusyState(saveCurrentPagePdfBtn, true, "Saving...");
+            try {
+                const originalPdfDoc = await PDFDocument.load(pdfBytes);
+                const newPdfDoc = await PDFDocument.create();
+                const [copiedPage] = await newPdfDoc.copyPages(originalPdfDoc, [currentPage - 1]);
+                newPdfDoc.addPage(copiedPage);
+                const newPdfBytes = await newPdfDoc.save();
+                saveAs(new Blob([newPdfBytes], { type: 'application/pdf' }), `page_${currentPage}_of_${currentPdf.name}`);
+                showNotification(`Page ${currentPage} saved as PDF!`, 'success');
+            } catch (err) { showNotification(`Error saving page: ${err.message}`, 'error'); console.error(err); }
+            finally { setButtonBusyState(saveCurrentPagePdfBtn, false); }
+        }
+
+        async function extractImagesFromPdf() {
+            if (!currentPdf || !pdfBytes) { showNotification('Please select a PDF first!', 'error'); return; }
+            setButtonBusyState(extractImagesBtn, true, "Extracting Images...");
+            statusEl.textContent = 'Extracting images...'; progress.style.width = '0%';
+            try {
+                const loadedPdfDoc = await PDFDocument.load(pdfBytes);
+                const JSZip = await loadJSZip(); const zip = new JSZip();
+                let imageCount = 0; const totalPages = loadedPdfDoc.getPageCount();
+
+                for (let i = 0; i < totalPages; i++) {
+                    const page = loadedPdfDoc.getPage(i);
+                    const xObjectDict = page.node.Resources()?.XObject();
+                    if (xObjectDict) {
+                        for (const [_key, valueRef] of xObjectDict.entries()) {
+                            if (valueRef.objectNumber === undefined) continue; 
+                            const stream = loadedPdfDoc.context.lookup(valueRef, PDFStream);
+                            if (stream && stream.dict.get(PDFName.of('Subtype')) === PDFName.of('Image')) {
+                                let imageBytes = stream.getContents(); let extension = 'bin';
+                                const filter = stream.dict.get(PDFName.of('Filter'));
+                                const filters = Array.isArray(filter) ? filter : (filter ? [filter] : []);
+
+                                if (filters.includes(PDFName.of('DCTDecode'))) extension = 'jpg';
+                                else if (filters.includes(PDFName.of('JPXDecode'))) extension = 'jp2';
+                                else if (filters.includes(PDFName.of('CCITTFaxDecode'))) extension = 'tiff';
+                                else if (filters.includes(PDFName.of('JBIG2Decode'))) extension = 'jb2';
+                                else if (filters.includes(PDFName.of('FlateDecode'))) {
+                                     // For FlateDecode, if ColorSpace exists and is DeviceGray or DeviceRGB, 
+                                     // and if BitsPerComponent is 8, it might be a raw bitmap that could be 
+                                     // reconstructed into PNG, but this is complex.
+                                     // For now, just save raw data or skip.
+                                     const cs = stream.dict.get(PDFName.of('ColorSpace'));
+                                     const bpc = stream.dict.get(PDFName.of('BitsPerComponent'));
+                                     if (cs && bpc) { // Basic check if it might be reconstructible
+                                        extension = 'dat'; // Potentially PNG-like data
+                                     } else {
+                                        console.warn("FlateDecode image without enough info to determine type easily.");
+                                        continue; // Skip ambiguous FlateDecodes
+                                     }
+                                } else if (filters.length > 0) { continue; } // Skip other unhandled filters
+                                
+                                if (imageBytes && imageBytes.length > 0 && extension !== 'bin') {
+                                    zip.file(`page${i+1}_image${imageCount + 1}.${extension}`, imageBytes);
+                                    imageCount++;
+                                }
+                            } } }
+                    progress.style.width = `${Math.round(((i + 1) / totalPages) * 100)}%`;
+                }
+                if (imageCount === 0) { showNotification('No common format images found.', 'warning'); }
+                else { const content = await zip.generateAsync({ type: 'blob' });
+                    saveAs(content, `${currentPdf.name.replace(/\.pdf$/i, '')}_images.zip`);
+                    showNotification(`Extracted ${imageCount} images!`, 'success');
+                }
+            } catch (err) { showNotification(`Image extraction error: ${err.message}`, 'error'); console.error(err); }
+            finally { setButtonBusyState(extractImagesBtn, false); progress.style.width = `0%`; statusEl.textContent = 'Ready to process your file';}
+        }
+
+
+        function loadJSZip() {
+            if (window.JSZip) return Promise.resolve(window.JSZip);
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script'); script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+                script.onload = () => resolve(window.JSZip); script.onerror = reject; document.head.appendChild(script); });
+        }
+        
+        function exportText(format) { // For exporting the content of #result div
+            const text = resultEl.textContent;
+            if (!text || text === "Your extracted text will appear here..." || text === "No text found!") { showNotification('No text to export!', 'error'); return; }
+            try {
+                if (format === 'pdf') {
+                    const doc = new jsPDF(); doc.setFontSize(18); doc.text('Extracted Text', 105, 15, { align: 'center' });
+                    doc.setFontSize(12); doc.text(doc.splitTextToSize(text, 180), 15, 30); doc.save('extracted-text.pdf');
+                } else if (format === 'excel') {
+                    const lines = text.split('\n').filter(line => line.trim() !== '');
+                    const ws = XLSX.utils.aoa_to_sheet([['Extracted Text'], ...lines.map(line => [line])]);
+                    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Extracted Text");
+                    XLSX.writeFile(wb, 'extracted-text.xlsx');
+                } else if (format === 'word') {
+                    const html = `<html><head><meta charset="UTF-8"></head><body><h1>Extracted Text</h1><p>${text.replace(/\n/g, '</p><p>')}</p></body></html>`;
+                    saveAs(new Blob(['\ufeff', html], { type: 'application/msword' }), 'extracted-text.doc');
+                }
+                showNotification(`Text exported to ${format.toUpperCase()}!`, 'success');
+            } catch (err) { showNotification(`Error exporting to ${format.toUpperCase()}: ${err.message}`, 'error'); console.error(err); }
+        }
+
+        function copyToClipboard() {
+            const textToCopy = resultEl.textContent;
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => showNotification('Text copied to clipboard!', 'success'))
+                .catch(() => { const ta = document.createElement('textarea'); ta.value = textToCopy; document.body.appendChild(ta);
+                    ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showNotification('Text copied (fallback)!', 'success'); });
+        }
+
+        function copyPaymentInfo(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => showNotification('Payment info copied!', 'success'))
+                .catch(() => { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+                    ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showNotification('Payment info copied (fallback)!', 'success'); });
+        }
+
+        function applyTheme() {
+            document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : '');
+            themeToggle.innerHTML = darkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+        function toggleTheme() { darkMode = !darkMode; localStorage.setItem('darkMode', darkMode); applyTheme(); }
+
+        // Event Listeners
+        uploadBox.addEventListener('click', () => { fileInput.value = null; fileInput.click(); });
+        pdfUploadBox.addEventListener('click', () => { pdfInput.value = null; pdfInput.click(); });
+        changeImageBtn.addEventListener('click', () => { fileInput.value = null; fileInput.click(); });
+        changePdfBtn.addEventListener('click', () => { pdfInput.value = null; pdfInput.click(); });
+        fileInput.addEventListener('change', handleImageSelect);
+        pdfInput.addEventListener('change', handlePdfSelect);
+        newImageBtn.addEventListener('click', resetForm);
+        convertBtn.addEventListener('click', processFile); // Main process button
+        copyBtn.addEventListener('click', copyToClipboard);
+        exportPdfBtn.addEventListener('click', () => exportText('pdf'));
+        exportExcelBtn.addEventListener('click', () => exportText('excel'));
+        exportWordBtn.addEventListener('click', () => exportText('word'));
+        supportBtn.addEventListener('click', () => supportModal.classList.add('active'));
+        closeSupport.addEventListener('click', () => supportModal.classList.remove('active'));
+        supportModal.addEventListener('click', (e) => { if (e.target === supportModal) supportModal.classList.remove('active'); });
+        themeToggle.addEventListener('click', toggleTheme);
+        prevPageBtn.addEventListener('click', prevPage);
+        nextPageBtn.addEventListener('click', nextPage);
+        pageNumberInput.addEventListener('change', goToPage);
+        
+        convertToExcelBtn.addEventListener('click', () => convertPdfToAll('excel'));
+        convertToWordBtn.addEventListener('click', () => convertPdfToAll('word'));
+        extractTextBtn.addEventListener('click', extractTextFromPdf);
+        extractImagesBtn.addEventListener('click', extractImagesFromPdf);
+        if(saveCurrentPagePdfBtn) saveCurrentPagePdfBtn.addEventListener('click', saveCurrentPageAsPdf);
+        
+        tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+        // Initial Setup
+        applyTheme(); 
+        switchTab(activeTab); 
+        setPdfActionButtonsState(true);
+
+    </script>
+</body>
+</html>
